@@ -1,0 +1,2 @@
+# discord-report-bot
+discordに投稿された報告資料のpdfファイルを読み取り,議事録のテンプレートを投稿するbot
