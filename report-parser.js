@@ -7,7 +7,7 @@ function extractReportFields(rawText) {
 
   const result = { date: null, title: null, name: null, reportContent: null, conclusion: null };
 
-  // 月・日は1桁("2026/9/4")・2桁("2026/09/04")どちらの表記でも認識する
+  // 報告日のよみとり
   const dateMatch = text.match(/\d{4}\/\d{1,2}\/\d{1,2}/);
   if (!dateMatch) return result;
   const rawDate = dateMatch[0]; // 位置特定にはPDF内の元の表記をそのまま使う
