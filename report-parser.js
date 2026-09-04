@@ -7,14 +7,17 @@ function extractReportFields(rawText) {
 
   const result = { date: null, title: null, name: null, reportContent: null, conclusion: null };
 
-  const dateMatch = text.match(/\d{4}\/\d{2}\/\d{2}/);
+  // 月・日は1桁("2026/9/4")・2桁("2026/09/04")どちらの表記でも認識する
+  const dateMatch = text.match(/\d{4}\/\d{1,2}\/\d{1,2}/);
   if (!dateMatch) return result;
-  result.date = dateMatch[0];
+  const rawDate = dateMatch[0]; // 位置特定にはPDF内の元の表記をそのまま使う
+  const [y, m, d] = rawDate.split('/');
+  result.date = `${y}/${m.padStart(2, '0')}/${d.padStart(2, '0')}`; // 表示用に2桁へ正規化
 
-  const idx = text.indexOf(result.date);
+  const idx = text.indexOf(rawDate);
   const before = text.slice(0, idx).trim();
   result.title = before.replace(/\n/g, ' ').trim();
-  const after = text.slice(idx + result.date.length).trim();
+  const after = text.slice(idx + rawDate.length).trim();
   result.name = after.split('\n')[0].trim();
 
   // 次の見出し行にマッチする共通パターン
@@ -49,7 +52,7 @@ function cleanName(rawName) {
 
 // 正規表現の特殊文字をエスケープする
 function escapeRegExp(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return str.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&');
 }
 
 // 種別(Gセミ/報告会)を検出するためのパターン
